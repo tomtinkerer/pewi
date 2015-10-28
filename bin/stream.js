@@ -1,3 +1,9 @@
+//--------------------------------------------------------------------------
+//TITLE: stream.js
+//Draws streams/waterways for PEWI
+//--------------------------------------------------------------------------
+
+
 var Stream = function () {
     this.draw = function (options) {
         var path = d3.select(options.parent)
