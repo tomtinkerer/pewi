@@ -1,3 +1,4 @@
+//??Tests browser compatibility 
 var CompatibilityMonster = function() {
     this.svg = false;
     this.file = false;
