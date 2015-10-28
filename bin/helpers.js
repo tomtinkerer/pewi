@@ -1,3 +1,10 @@
+//--------------------------------------------------------------------------
+//TITLE: helpers.js
+//
+//--------------------------------------------------------------------------
+
+
+//List of variables
 var landCoverArea,
     watershedArea,
     streamArea,
@@ -7,6 +14,7 @@ var landCoverArea,
     topoSlopeRangeHigh,
     permeabilityCode;
 
+//Default initCalcs funciton, mostly "0" or NULL values
 function initCalcs() {
     landCoverArea = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     watershedArea = 0, streamArea = 0, strategicArea = 0;
@@ -17,26 +25,35 @@ function initCalcs() {
     permeabilityCode = [];
 }
 
+//Counts land area of the watershed
 function setWatershedArea(i) {
 	watershedArea += global.data[global.year].area.data[i];
 }
 
+//Counts strategic wetlands
 function setStrategicWetland(i) {
     if (global.data[global.year].wetland.data[i] == 1) {
         strategicArea++;
     }
 }
+
+//Counts area of a specified subwatershed
 function setSubwatershedArea(i) {
     var subwatershed = global.data[global.year].subwatershed.data;
     if (subwatershed[i] != undefined && subwatershed[i] != "Subwatershed") {
         subwatershedArea[subwatershed[i]] += global.data[global.year].area.data[i];
     }
 }
+
+//Counts area of PEWI covered in waterways
 function setStreamNetworkArea(i) {
     if (global.data[global.year].streamnetwork.data[i] == 1) {
         streamArea += global.data[global.year].area.data[i];
     }
 }
+
+//Defines soil types and the variables/factors associated with each, and
+//  sets the selected cell to the specified type
 function setSoiltypeFactors(i) {
     switch (global.data[global.year].soiltype.data[i]) {
         case "A":
@@ -93,6 +110,8 @@ function setSoiltypeFactors(i) {
             break;
     }
 }
+
+//Set topography factors for specified cell
 function setTopographyFactors(i) {
     switch (global.data[global.year].topography.data[i]) {
         case 0:
@@ -123,6 +142,8 @@ function setTopographyFactors(i) {
  * @param i - index that the landcover occurs
  * @param firstpass - true if we are building the watershed from scratch, false if we are updating already existing data points
  */
+
+ //??
 function changeBaselandcoverDataPoint(value, i, firstpass, year) {
     if (global.data[year].baselandcover.data[i] !== 0 && !firstpass) {
         setLandCoverArea(value, i, year, global.data[year].baselandcover.data[i]);
@@ -146,6 +167,8 @@ function changeBaselandcoverDataPoint(value, i, firstpass, year) {
  * @param newIdx - the old landcover type
  * @param oldIdx - the new landcover type
  */
+
+ //Function for changing landcover from old type ot new type
 function setLandCoverArea(newIdx, i, year, oldIdx) {
     var dataPointArea = global.data[year].area.data[i];
     landCoverArea[newIdx] += dataPointArea;
@@ -160,6 +183,7 @@ function setLandCoverArea(newIdx, i, year, oldIdx) {
         // We haven't accounted for this area yet
     }
 }
+
 
 /**
  * Removes pointers
@@ -186,6 +210,7 @@ function copy(obj) {
     return returnObj;
 }
 
+
 /**
  * Centers an element relative to another
  * @param parent - The parent element to center relative to
@@ -202,9 +227,8 @@ function centerElement(parent, child) { // Check for less than zero margin top!!
     child.css("marginLeft", marginleft)/*.css("marginTop", margintop)*/;
 }
 
-/**
- * Sets the precipitation for year 0 through year 3 in the watershed
- */
+
+//Sets the precipitation for year 0 through year 3 in the watershed
 function setPrecipitation(year, overrideValue) {
     var precip = [24.58, 28.18, 30.39, 32.16, 34.34, 36.47, 45.10];
     if (overrideValue) {
@@ -234,10 +258,13 @@ function setPrecipitation(year, overrideValue) {
     }
 }
 
+
+//Returns precipitation value
 function getPrecipitationValue(index) {
     var precip = [24.58, 28.18, 30.39, 32.16, 34.34, 36.47, 45.10];
     return precip[index];
 }
+
 
 /**
  * Get a log with base 10
@@ -247,6 +274,7 @@ function getPrecipitationValue(index) {
 function log10(x) {
     return Math.log(x) / Math.LN10;
 }
+
 
 /**
  *
@@ -269,6 +297,7 @@ function resetLandCoverValuesAreasFor(year) {
     global.landcovers[year][landcovers[15]].area = 0;
 }
 
+
 function closeAllRemovableDisplays() {
     $(".removable-displays-container").each(function () {
         $(this).remove();
@@ -276,9 +305,11 @@ function closeAllRemovableDisplays() {
     d3.selectAll(".removable-displays").remove();
 }
 
+
 function addDatasetChangesToUndoLog(actions) {
     global.undo[global.year].push(actions);
 }
+
 
 function undoLastDatasetChanges() {
     if(!global.undo[global.year][0]) return;
@@ -295,6 +326,7 @@ function undoLastDatasetChanges() {
     }
 }
 
+
 function updateDataPoint(i, options) {
 	//setStrategicWetland(i);
 	//setStreamNetworkArea(i);
@@ -304,6 +336,7 @@ function updateDataPoint(i, options) {
 	//setTopographyFactors(i);
 }
 
+
 function reinitialize() {
 	for(var index in dataset) {
 		for(var year=1; year<=global.years; year++) {
@@ -311,13 +344,13 @@ function reinitialize() {
 			if(dataset[index]['Value' + year] !== 0) dataset[index]['Value' + year] = 0;
 		}
 	}
-	
+
     global.landuse = {
         1: [],
         2: [],
         3: []
     };
-	
+
     global.watershedPercent = {
         1: [],
         2: [],
@@ -335,16 +368,18 @@ function reinitialize() {
         2: [],
         3: []
     };
-	
+
 	global.strategicWetland = {};
 
     landCoverArea = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 }
 
+
 function flagUpdateToTrue(year) {
     global.update[year] = true;
 //    console.log("Year " + year + " update set to true");
 }
+
 
 function flagUpdateToFalse(year) {
     global.update[year] = false;
