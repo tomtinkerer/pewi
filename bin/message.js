@@ -1,3 +1,4 @@
+//??
 var MessageView = function() {
    var options = {
        width: 200,
@@ -5,12 +6,12 @@ var MessageView = function() {
        title: ''
    };
    var modal = new ModalView();
-   
-   
+
+
 
    this.show = function() {
-	   
+
    }
 
-	
+
 }
